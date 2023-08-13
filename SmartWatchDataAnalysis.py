@@ -1,128 +1,94 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "ca98f5f0-1be3-4660-821b-77cf14eabafb",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import pandas as pd\n",
-    "import numpy as np\n",
-    "import matplotlib.pyplot as plt\n",
-    "import plotly.express as px\n",
-    "import plotly.graph_objects as go\n",
-    "\n",
-    "data = pd.read_csv(\"dailyActivity_merged.csv\")\n",
-    "print(data.head())\n",
-    "\n",
-    "# Remove all null data\n",
-    "print(data.isnull().sum())\n",
-    "print(data.info())\n",
-    "\n",
-    "# Changing datatype of ActivityDate\n",
-    "data[\"ActivityDate\"] = pd.to_datetime(data[\"ActivityDate\"], \n",
-    "                                      format=\"%m/%d/%Y\")\n",
-    "print(data.info())\n",
-    "\n",
-    "# Statistics of Total DataSets\n",
-    "data[\"TotalMinutes\"] = data[\"VeryActiveMinutes\"] + data[\"FairlyActiveMinutes\"] + data[\"LightlyActiveMinutes\"] + data[\"SedentaryMinutes\"]\n",
-    "print(data[\"TotalMinutes\"].sample(5))\n",
-    "\n",
-    "print(data.describe())\n",
-    "\n",
-    "# Relationship Between Calories & Total Steps\n",
-    "figure = px.scatter(data_frame = data, x=\"Calories\",\n",
-    "                    y=\"TotalSteps\", size=\"VeryActiveMinutes\", \n",
-    "                    trendline=\"ols\", \n",
-    "                    title=\"Relationship between Calories & Total Steps\")\n",
-    "figure.show()\n",
-    "\n",
-    "# Total Active Minutes\n",
-    "label = [\"Very Active Minutes\", \"Fairly Active Minutes\", \n",
-    "         \"Lightly Active Minutes\", \"Inactive Minutes\"]\n",
-    "counts = data[[\"VeryActiveMinutes\", \"FairlyActiveMinutes\", \n",
-    "               \"LightlyActiveMinutes\", \"SedentaryMinutes\"]].mean()\n",
-    "colors = ['gold','lightgreen', \"pink\", \"blue\"]\n",
-    "\n",
-    "fig = go.Figure(data=[go.Pie(labels=label, values=counts)])\n",
-    "fig.update_layout(title_text='Total Active Minutes')\n",
-    "fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=30,\n",
-    "                  marker=dict(colors=colors, line=dict(color='black', width=3)))\n",
-    "fig.show()\n",
-    "\n",
-    "# Active Minutes on Each day of Week\n",
-    "data[\"Day\"] = data[\"ActivityDate\"].dt.day_name()\n",
-    "print(data[\"Day\"].head())\n",
-    "\n",
-    "fig = go.Figure()\n",
-    "fig.add_trace(go.Bar(\n",
-    "    x=data[\"Day\"],\n",
-    "    y=data[\"VeryActiveMinutes\"],\n",
-    "    name='Very Active',\n",
-    "    marker_color='purple'\n",
-    "))\n",
-    "fig.add_trace(go.Bar(\n",
-    "    x=data[\"Day\"],\n",
-    "    y=data[\"FairlyActiveMinutes\"],\n",
-    "    name='Fairly Active',\n",
-    "    marker_color='green'\n",
-    "))\n",
-    "fig.add_trace(go.Bar(\n",
-    "    x=data[\"Day\"],\n",
-    "    y=data[\"LightlyActiveMinutes\"],\n",
-    "    name='Lightly Active',\n",
-    "    marker_color='pink'\n",
-    "))\n",
-    "fig.update_layout(barmode='group', xaxis_tickangle=-45)\n",
-    "fig.show()\n",
-    "\n",
-    "\n",
-    "# Inactive Minutes Daily\n",
-    "day = data[\"Day\"].value_counts()\n",
-    "label = day.index\n",
-    "counts = data[\"SedentaryMinutes\"]\n",
-    "colors = ['gold','lightgreen', \"pink\", \"blue\", \"skyblue\", \"cyan\", \"orange\"]\n",
-    "\n",
-    "fig = go.Figure(data=[go.Pie(labels=label, values=counts)])\n",
-    "fig.update_layout(title_text='Inactive Minutes Daily')\n",
-    "fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=30,\n",
-    "                  marker=dict(colors=colors, line=dict(color='black', width=3)))\n",
-    "fig.show()\n",
-    "\n",
-    "# Calories Burnt Daily\n",
-    "calories = data[\"Day\"].value_counts()\n",
-    "label = calories.index\n",
-    "counts = data[\"Calories\"]\n",
-    "colors = ['gold','lightgreen', \"pink\", \"blue\", \"skyblue\", \"cyan\", \"orange\"]\n",
-    "\n",
-    "fig = go.Figure(data=[go.Pie(labels=label, values=counts)])\n",
-    "fig.update_layout(title_text='Calories Burned Daily')\n",
-    "fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=30,\n",
-    "                  marker=dict(colors=colors, line=dict(color='black', width=3)))\n",
-    "fig.show()"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.11.4"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
+
+data = pd.read_csv("dailyActivity_merged.csv")
+print(data.head())
+
+# Remove all null data
+print(data.isnull().sum())
+print(data.info())
+
+# Changing datatype of ActivityDate
+data["ActivityDate"] = pd.to_datetime(data["ActivityDate"], 
+                                      format="%m/%d/%Y")
+print(data.info())
+
+# Statistics of Total DataSets
+data["TotalMinutes"] = data["VeryActiveMinutes"] + data["FairlyActiveMinutes"] + data["LightlyActiveMinutes"] + data["SedentaryMinutes"]
+print(data["TotalMinutes"].sample(5))
+
+print(data.describe())
+
+# Relationship Between Calories & Total Steps
+figure = px.scatter(data_frame = data, x="Calories",
+                    y="TotalSteps", size="VeryActiveMinutes", 
+                    trendline="ols", 
+                    title="Relationship between Calories & Total Steps")
+figure.show()
+
+# Total Active Minutes
+label = ["Very Active Minutes", "Fairly Active Minutes", 
+         "Lightly Active Minutes", "Inactive Minutes"]
+counts = data[["VeryActiveMinutes", "FairlyActiveMinutes", 
+               "LightlyActiveMinutes", "SedentaryMinutes"]].mean()
+colors = ['gold','lightgreen', "pink", "blue"]
+
+fig = go.Figure(data=[go.Pie(labels=label, values=counts)])
+fig.update_layout(title_text='Total Active Minutes')
+fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=30,
+                  marker=dict(colors=colors, line=dict(color='black', width=3)))
+fig.show()
+
+# Active Minutes on Each day of Week
+data["Day"] = data["ActivityDate"].dt.day_name()
+print(data["Day"].head())
+
+fig = go.Figure()
+fig.add_trace(go.Bar(
+    x=data["Day"],
+    y=data["VeryActiveMinutes"],
+    name='Very Active',
+    marker_color='purple'
+))
+fig.add_trace(go.Bar(
+    x=data["Day"],
+    y=data["FairlyActiveMinutes"],
+    name='Fairly Active',
+    marker_color='green'
+))
+fig.add_trace(go.Bar(
+    x=data["Day"],
+    y=data["LightlyActiveMinutes"],
+    name='Lightly Active',
+    marker_color='pink'
+))
+fig.update_layout(barmode='group', xaxis_tickangle=-45)
+fig.show()
+
+
+# Inactive Minutes Daily
+day = data["Day"].value_counts()
+label = day.index
+counts = data["SedentaryMinutes"]
+colors = ['gold','lightgreen', "pink", "blue", "skyblue", "cyan", "orange"]
+
+fig = go.Figure(data=[go.Pie(labels=label, values=counts)])
+fig.update_layout(title_text='Inactive Minutes Daily')
+fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=30,
+                  marker=dict(colors=colors, line=dict(color='black', width=3)))
+fig.show()
+
+# Calories Burnt Daily
+calories = data["Day"].value_counts()
+label = calories.index
+counts = data["Calories"]
+colors = ['gold','lightgreen', "pink", "blue", "skyblue", "cyan", "orange"]
+
+fig = go.Figure(data=[go.Pie(labels=label, values=counts)])
+fig.update_layout(title_text='Calories Burned Daily')
+fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=30,
+                  marker=dict(colors=colors, line=dict(color='black', width=3)))
+fig.show()
